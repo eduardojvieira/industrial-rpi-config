@@ -1,0 +1,20 @@
+---
+- name: Hardening Industrial Raspberry Pi
+  hosts: all
+  become: yes
+  tasks:
+    - name: Install watchdog package
+      apt:
+        name: watchdog
+        state: present
+
+    - name: Configure systemd-logind to disable power buttons
+      lineinfile:
+        path: /etc/systemd/logind.conf
+        regexp: '^#?HandlePowerKey='
+        line: 'HandlePowerKey=ignore'
+
+    - name: Disable HDMI to save power (optional)
+      lineinfile:
+        path: /boot/config.txt
+        line: 'hdmi_blanking=2'
